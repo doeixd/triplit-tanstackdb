@@ -281,6 +281,8 @@ describe('Edge Cases and Error Scenarios', () => {
 
       config.sync.sync(mockParams);
 
+      await new Promise(resolve => setTimeout(resolve, 0));
+
       // Rapid updates
       for (let i = 0; i < 10; i++) {
         const updateData = new Map([
