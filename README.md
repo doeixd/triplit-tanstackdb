@@ -1,6 +1,6 @@
-# `triplit-tanstackdb` (Part 1 of 2)
+[![NPM Version](https://img.shields.io/npm/v/triplit-tanstackdb)](https://www.npmjs.com/package/triplit-tanstackdb) [![Minzip Size](https://img.shields.io/bundlephobia/minzip/triplit-tanstackdb)](https://bundlephobia.com/package/triplit-tanstackdb) [![License](https://img.shields.io/npm/l/triplit-tanstackdb)](https://github.com/TanStack/db/blob/main/LICENSE)
 
-[![NPM Version](https://img.shields.io/npm/v/triplit-tanstackdb?style=flat-square)](https://www.npmjs.com/package/triplit-tanstackdb) [![Minzip Size](https://img.shields.io/bundlephobia/minzip/triplit-tanstackdb?style=flat-square)](https://bundlephobia.com/package/triplit-tanstackdb) [![License](https://img.shields.io/npm/l/triplit-tanstackdb?style=flat-square)](https://github.com/TanStack/db/blob/main/LICENSE) [![Discord](https://img.shields.io/discord/719929239960289310?style=flat-square&logo=discord&logoColor=white&label=Discord)](https://tanstack.com/discord)
+# Triplit TanStack DB
 
 Welcome! This is the primary guide for `triplit-tanstackdb`, a seamless, real-time collection for **TanStack DB** powered by the **[Triplit](https://www.triplit.dev/)** sync engine. This library provides the bridge to connect Triplit's real-time, offline-first power with the unified, reactive query engine of TanStack DB.
 
