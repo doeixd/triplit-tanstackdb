@@ -69,7 +69,9 @@ function TaskCard({ taskId, userId }) {
     </div>
   );
 }
-```This pattern creates components that are difficult to test, reuse, and reason about. This is the problem `triplit-tanstackdb` is designed to solve.
+```
+
+This pattern creates components that are difficult to test, reuse, and reason about. This is the problem `triplit-tanstackdb` is designed to solve.
 
 <br />
 
