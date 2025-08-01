@@ -17,7 +17,7 @@ import { createTriplitCollectionOptions } from './options';
  * that are not handled by our adapter. This provides maximum flexibility.
  * @internal
  */
-type PassthroughCollectionConfig<TItem> = Omit<
+type PassthroughCollectionConfig<TItem extends object> = Omit<
   CollectionConfig<TItem>,
   'getKey' | 'sync' | 'onInsert' | 'onUpdate' | 'onDelete'
 >;
@@ -30,7 +30,7 @@ type PassthroughCollectionConfig<TItem> = Omit<
 export interface TriplitCollectionFactoryOptions<
   M extends Models<M>,
   TQuery extends SchemaQuery<M>,
-  TItem extends TQuery['_output'] = TQuery['_output']
+  TItem extends object = TQuery extends { _output: infer O extends object } ? O : never
 > extends PassthroughCollectionConfig<TItem> {
   /**
    * An instance of the configured TriplitClient. This client should be
@@ -113,7 +113,7 @@ export interface TriplitCollectionFactoryOptions<
 export function createTriplitCollection<
   M extends Models<M>,
   TQuery extends SchemaQuery<M>,
-  TItem extends TQuery['_output'] = TQuery['_output']
+  TItem extends object = TQuery extends { _output: infer O extends object } ? O : never
 >(
   options: TriplitCollectionFactoryOptions<M, TQuery, TItem>
 ): Collection<TItem> {
@@ -138,8 +138,10 @@ export function createTriplitCollection<
 
   // 2. Create and return the final TanStack DB Collection, combining the adapter's
   //    logic with all the standard configuration properties passed in by the user.
-  return createCollection<TItem>({
+  // Note: Type assertion needed due to TanStack DB's complex ResolveType system
+  // At runtime, the types are compatible since TItem extends object
+  return createCollection({
     ...restConfig, // Spread passthrough options first (id, schema, rowUpdateMode, etc.)
     ...triplitAdapterOptions, // Then spread our adapter's core logic.
-  });
+  } as any) as unknown as Collection<TItem>;
 }

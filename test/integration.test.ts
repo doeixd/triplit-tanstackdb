@@ -150,6 +150,12 @@ describe('Integration Tests', () => {
       expect(mockClient.fetch).toHaveBeenCalledWith(mockQuery);
       expect(mockSyncParams.markReady).toHaveBeenCalled();
 
+      // Set up local data to simulate the collection having existing items
+      mockSyncParams.collection.getSnapshot.mockReturnValue([
+        { id: '1', text: 'Learn Triplit', completed: false, userId: 'user1' },
+        { id: '2', text: 'Build app', completed: false, userId: 'user1' },
+      ]);
+
       // Simulate subscription update
       subscriptionCallback!(updatedTodos);
 
@@ -301,6 +307,9 @@ describe('Integration Tests', () => {
         unsubscribeFns.push(unsubscribe);
         return unsubscribe;
       });
+
+      // Set up fetch to return a promise for each collection
+      mockClient.fetch.mockResolvedValue(new Map());
 
       // Create multiple collections
       const collections = Array.from({ length: 3 }, (_, i) =>

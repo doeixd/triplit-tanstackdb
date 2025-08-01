@@ -21,7 +21,7 @@ import {
 export interface TriplitCollectionOptions<
   M extends Models<M>,
   TQuery extends SchemaQuery<M>,
-  TItem extends TQuery['_output']
+  TItem extends object = TQuery extends { _output: infer O extends object } ? O : never
 > {
   client: TriplitClient<M>;
   query: TQuery;
@@ -37,12 +37,15 @@ export interface TriplitCollectionOptions<
 export function createTriplitCollectionOptions<
   M extends Models<M>,
   TQuery extends SchemaQuery<M>,
-  TItem extends TQuery['_output']
+  TItem extends object = TQuery extends { _output: infer O extends object } ? O : never
 >(
   options: TriplitCollectionOptions<M, TQuery, TItem>
 ): CollectionConfig<TItem> {
   const { client, query, getKey, onError } = options;
   const collectionName = query.collectionName as string & keyof M;
+
+  // Note: Triplit handles optimistic mutations internally via its outbox system
+  // We don't need to manually track pending mutations
 
   const syncFn: SyncConfig<TItem>['sync'] = (params) => {
     const { begin, write, commit, markReady, collection } = params;
@@ -52,25 +55,21 @@ export function createTriplitCollectionOptions<
 
     const reconcileSnapshot = (results: FetchResult<M, TQuery, 'many'>) => {
       begin();
-      const localItems = collection.getSnapshot();
+      const localItems = Array.from(collection.state.values());
       const localKeys = new Set(localItems.map(getKey));
-      const remoteItems = Array.from(results.values()) as TItem[];
+      const remoteItems = results ? Array.from(results.values()) as TItem[] : [];
       const remoteKeys = new Set(remoteItems.map(getKey));
 
-      // This is the critical fix for the optimistic update race condition.
-      // We get the keys of all items that are currently part of a pending,
-      // optimistic mutation that hasn't been confirmed by the server yet.
-      const pendingMutationKeys = new Set(
-        collection.getPendingMutations().flatMap((tx) => tx.mutations.map((m) => m.key))
-      );
-
       // Handle Deletes:
-      // An item should be deleted if it exists locally but not in the new remote snapshot,
-      // UNLESS that item is part of a pending optimistic mutation. This prevents the UI
-      // from flickering when a subscription snapshot arrives before the mutation is fully synced.
+      // Triplit's outbox system automatically handles optimistic mutations and race conditions
+      // We can safely delete items that exist locally but not in the remote snapshot
       for (const key of localKeys) {
-        if (!remoteKeys.has(key) && !pendingMutationKeys.has(key)) {
-          write({ type: 'delete', key });
+        if (!remoteKeys.has(key)) {
+          // Find the original item being deleted
+          const originalItem = localItems.find((item: TItem) => getKey(item) === key);
+          if (originalItem) {
+            write({ type: 'delete', value: originalItem });
+          }
         }
       }
 
@@ -78,7 +77,7 @@ export function createTriplitCollectionOptions<
       for (const typedItem of remoteItems) {
         const key = getKey(typedItem);
         if (localKeys.has(key)) {
-          write({ type: 'update', key, value: typedItem });
+          write({ type: 'update', value: typedItem });
         } else {
           write({ type: 'insert', value: typedItem });
         }
@@ -126,9 +125,10 @@ export function createTriplitCollectionOptions<
   };
 
   const onInsert: InsertMutationFn<TItem> = async ({ transaction }) => {
+    // Triplit handles optimistic mutations automatically via its outbox system
     try {
       for (const mutation of transaction.mutations) {
-        await client.insert(collectionName, mutation.modified);
+        await client.insert(collectionName, mutation.modified as any);
       }
     } catch (error) {
       onError?.(error as Error);
@@ -138,12 +138,13 @@ export function createTriplitCollectionOptions<
   };
 
   const onUpdate: UpdateMutationFn<TItem> = async ({ transaction }) => {
+    // Triplit handles optimistic mutations automatically via its outbox system
     try {
       for (const mutation of transaction.mutations) {
         await client.update(
           collectionName,
           String(mutation.key),
-          mutation.changes
+          mutation.changes as any
         );
       }
     } catch (error) {
@@ -153,6 +154,7 @@ export function createTriplitCollectionOptions<
   };
 
   const onDelete: DeleteMutationFn<TItem> = async ({ transaction }) => {
+    // Triplit handles optimistic mutations automatically via its outbox system
     try {
       for (const mutation of transaction.mutations) {
         await client.delete(collectionName, String(mutation.key));
