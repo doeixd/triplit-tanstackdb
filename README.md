@@ -4,11 +4,13 @@
 
 Welcome! This is the primary guide for `triplit-tanstackdb`, a seamless, real-time collection for **TanStack DB** powered by the **[Triplit](https://www.triplit.dev/)** sync engine. This library provides the bridge to connect Triplit's real-time, offline-first power with the unified, reactive query engine of TanStack DB.
 
-This first document covers the core concepts, the problems this library solves, and provides a quick start guide to get you up and running with your first real-time collection.
+This document covers the core concepts, the problems this library solves, and provides a quick start guide to get you up and running with your first real-time collection.
+
+For a full blog post introducing the concepts, and why it's beneficial to use Triplit with TanStack DB, [Click Here](/docs/GUIDE.md)
 
 <br />
 
-## Part 1: Table of Contents
+## Table of Contents
 
 1.  [What is This and Why Do I Need It?](#what-is-this-and-why-do-i-need-it)
 2.  [The Solution: A Unified Data Fabric](#the-solution-a-unified-data-fabric)
