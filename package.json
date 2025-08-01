@@ -1,0 +1,78 @@
+{
+  "name": "triplit-tanstackdb",
+  "version": "0.0.0",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=16"
+  },
+  "license": "MIT",
+  "keywords": [
+    "tanstack",
+    "tanstack-db",
+    "tanstack-query",
+    "triplit",
+    "database",
+    "real-time",
+    "realtime",
+    "sync",
+    "synchronization",
+    "offline",
+    "offline-first",
+    "local-first",
+    "reactive",
+    "optimistic-updates",
+    "collection",
+    "adapter",
+    "integration",
+    "crdt",
+    "websocket",
+    "collaboration",
+    "multi-user",
+    "data-layer",
+    "state-management",
+    "react",
+    "query",
+    "vue",
+    "svelte",
+    "solid",
+    "pridepack"
+  ],
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "pridepack": "2.6.4",
+    "tslib": "^2.8.1",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  },
+  "scripts": {
+    "prepublishOnly": "pridepack clean && pridepack build",
+    "build": "pridepack build",
+    "type-check": "pridepack check",
+    "clean": "pridepack clean",
+    "watch": "pridepack watch",
+    "start": "pridepack start",
+    "dev": "pridepack dev",
+    "test": "vitest"
+  },
+  "private": false,
+  "description": "TanStack DB collection adapter for the Triplit real-time, offline-first sync engine. Enables powerful optimistic updates and reactive, cross-source queries.",
+  "repository": {
+    "url": "https://github.com/doeixd/triplit-tanstackdb",
+    "type": "git"
+  },
+  "homepage": "https://github.com/doeixd/triplit-tanstackdb",
+  "bugs": {
+    "url": "https://github.com/doeixd/triplit-tanstackdb/issues"
+  },
+  "author": "Patrick Glenn",
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@tanstack/db": "^0.1.0",
+    "@triplit/client": "^1.0.50"
+  }
+}
