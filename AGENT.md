@@ -133,7 +133,7 @@ collection: {
 - **Subscription Issues**: Verify cleanup functions are properly returned
 
 ### Documentation Updates
-- **README.md**: User-facing documentation with installation and examples
+- **README.md**: User-facing documentation with installation and examples, extremely comprehensive.
 - **AGENT.md**: This file - technical implementation details
 - **JSDoc**: Inline code documentation for API reference
 - **AGENT_SUMMARIES**: After any big change / or adventure / thread etc. they should create a doc in the docs/AGENT_SUMMARIES folder
