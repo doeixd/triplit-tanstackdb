@@ -137,8 +137,7 @@ describe('Integration Tests', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => []),
-          getPendingMutations: vi.fn(() => []),
+          state: new Map(),
         },
       };
 
@@ -151,17 +150,17 @@ describe('Integration Tests', () => {
       expect(mockSyncParams.markReady).toHaveBeenCalled();
 
       // Set up local data to simulate the collection having existing items
-      mockSyncParams.collection.getSnapshot.mockReturnValue([
+      const localItems = [
         { id: '1', text: 'Learn Triplit', completed: false, userId: 'user1' },
         { id: '2', text: 'Build app', completed: false, userId: 'user1' },
-      ]);
+      ];
+      mockSyncParams.collection.state = new Map(localItems.map(item => [item.id, item]));
 
       // Simulate subscription update
       subscriptionCallback!(updatedTodos);
 
       expect(mockSyncParams.write).toHaveBeenCalledWith({
         type: 'update',
-        key: '1',
         value: { id: '1', text: 'Learn Triplit', completed: true, userId: 'user1' },
       });
 
@@ -235,8 +234,7 @@ describe('Integration Tests', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => []),
-          getPendingMutations: vi.fn(() => []),
+          state: new Map(),
         },
       };
 
@@ -329,8 +327,7 @@ describe('Integration Tests', () => {
           commit: vi.fn(),
           markReady: vi.fn(),
           collection: {
-            getSnapshot: vi.fn(() => []),
-            getPendingMutations: vi.fn(() => []),
+            state: new Map(),
           },
         });
       });

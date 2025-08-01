@@ -1,8 +1,8 @@
-# `@doeixd/triplit-tanstackdb` (Part 1 of 2)
+# `triplit-tanstackdb` (Part 1 of 2)
 
-[![NPM Version](https://img.shields.io/npm/v/@doeixd/triplit-tanstackdb?style=flat-square)](https://www.npmjs.com/package/@doeixd/triplit-tanstackdb) [![Minzip Size](https://img.shields.io/bundlephobia/minzip/@doeixd/triplit-tanstackdb?style=flat-square)](https://bundlephobia.com/package/@doeixd/triplit-tanstackdb) [![License](https://img.shields.io/npm/l/@doeixd/triplit-tanstackdb?style=flat-square)](https://github.com/TanStack/db/blob/main/LICENSE) [![Discord](https://img.shields.io/discord/719929239960289310?style=flat-square&logo=discord&logoColor=white&label=Discord)](https://tanstack.com/discord)
+[![NPM Version](https://img.shields.io/npm/v/triplit-tanstackdb?style=flat-square)](https://www.npmjs.com/package/triplit-tanstackdb) [![Minzip Size](https://img.shields.io/bundlephobia/minzip/triplit-tanstackdb?style=flat-square)](https://bundlephobia.com/package/triplit-tanstackdb) [![License](https://img.shields.io/npm/l/triplit-tanstackdb?style=flat-square)](https://github.com/TanStack/db/blob/main/LICENSE) [![Discord](https://img.shields.io/discord/719929239960289310?style=flat-square&logo=discord&logoColor=white&label=Discord)](https://tanstack.com/discord)
 
-Welcome! This is the primary guide for `@tanstack/triplit-tanstackdb`, a seamless, real-time collection for **TanStack DB** powered by the **[Triplit](https://www.triplit.dev/)** sync engine. This library provides the bridge to connect Triplit's real-time, offline-first power with the unified, reactive query engine of TanStack DB.
+Welcome! This is the primary guide for `triplit-tanstackdb`, a seamless, real-time collection for **TanStack DB** powered by the **[Triplit](https://www.triplit.dev/)** sync engine. This library provides the bridge to connect Triplit's real-time, offline-first power with the unified, reactive query engine of TanStack DB.
 
 This first document covers the core concepts, the problems this library solves, and provides a quick start guide to get you up and running with your first real-time collection.
 
@@ -69,13 +69,13 @@ function TaskCard({ taskId, userId }) {
     </div>
   );
 }
-```This pattern creates components that are difficult to test, reuse, and reason about. This is the problem `@doeixd/triplit-tanstackdb` is designed to solve.
+```This pattern creates components that are difficult to test, reuse, and reason about. This is the problem `triplit-tanstackdb` is designed to solve.
 
 <br />
 
 ## The Solution: A Unified Data Fabric
 
-`@doeixd/triplit-tanstackdb` allows you to treat your real-time Triplit data as just another **TanStack DB `Collection`**.
+`triplit-tanstackdb` allows you to treat your real-time Triplit data as just another **TanStack DB `Collection`**.
 
 It provides an abstraction layer that harmonizes your disparate data sources. Once data is in a collection—whether from a REST API or a real-time Triplit stream—it speaks the same language. This enables you to build simple, powerful components that are completely unaware of the underlying data source complexity.
 
@@ -103,7 +103,7 @@ It's helpful to think of these libraries' roles using a car analogy:
 | **TanStack Query** | Server Cache & Network Manager | The robust gas engine |
 | **Triplit Client** | Real-Time Sync Engine | The high-performance electric motor |
 | **TanStack DB** | Reactive UI Data Layer | The unified cockpit & dashboard |
-| **`@doeixd/triplit-tanstackdb`**| The Bridge | The specialized wiring harness |
+| **`triplit-tanstackdb`**| The Bridge | The specialized wiring harness |
 
 This library is the wiring harness that plugs your powerful Triplit "electric motor" into the unified "dashboard" of TanStack DB.
 
@@ -115,9 +115,9 @@ This library is the wiring harness that plugs your powerful Triplit "electric mo
 
 This package has peer dependencies that need to be installed:
 ```bash
-npm install @tanstack/db @tanstack/react-db @triplit/client @doeixd/triplit-tanstackdb
+npm install @tanstack/db @tanstack/react-db @triplit/client triplit-tanstackdb
 # or
-yarn add @tanstack/db @tanstack/react-db @triplit/client @doeixd/triplit-tanstackdb
+yarn add @tanstack/db @tanstack/react-db @triplit/client triplit-tanstackdb
 ```
 *Note: For the hybrid patterns discussed in Part 2, you will also need `@tanstack/react-query` and `@tanstack/query-collection`.*
 
@@ -171,7 +171,7 @@ Next, use the `createTriplitCollection` factory in a dedicated collections file.
 
 ```typescript
 // src/collections.ts
-import { createTriplitCollection } from '@doeixd/triplit-tanstackdb';
+import { createTriplitCollection } from 'triplit-tanstackdb';
 import { client } from './triplitClient';
 import { todoSchema } from '../triplit/schemas'; // An optional Zod schema
 

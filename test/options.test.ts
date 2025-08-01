@@ -83,8 +83,7 @@ describe('createTriplitCollectionOptions', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => []),
-          getPendingMutations: vi.fn(() => []),
+          state: new Map(),
         },
       };
 
@@ -115,8 +114,7 @@ describe('createTriplitCollectionOptions', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => []),
-          getPendingMutations: vi.fn(() => []),
+          state: new Map(),
         },
       };
 
@@ -149,8 +147,7 @@ describe('createTriplitCollectionOptions', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => localItems),
-          getPendingMutations: vi.fn(() => []),
+          state: new Map(localItems.map(item => [getKey(item), item])),
         },
       };
 
@@ -160,11 +157,10 @@ describe('createTriplitCollectionOptions', () => {
 
       expect(mockParams.write).toHaveBeenCalledWith({
         type: 'delete',
-        key: '3',
+        value: { id: '3', name: 'To Delete', completed: false },
       });
       expect(mockParams.write).toHaveBeenCalledWith({
         type: 'update',
-        key: '1',
         value: { id: '1', name: 'Updated Item', completed: true },
       });
       expect(mockParams.write).toHaveBeenCalledWith({
@@ -199,8 +195,7 @@ describe('createTriplitCollectionOptions', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => localItems),
-          getPendingMutations: vi.fn(() => pendingMutations),
+          state: new Map(localItems.map(item => [getKey(item), item])),
         },
       };
 
@@ -231,8 +226,7 @@ describe('createTriplitCollectionOptions', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => []),
-          getPendingMutations: vi.fn(() => []),
+          state: new Map(),
         },
       };
 
@@ -256,8 +250,7 @@ describe('createTriplitCollectionOptions', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => []),
-          getPendingMutations: vi.fn(() => []),
+          state: new Map(),
         },
       };
 

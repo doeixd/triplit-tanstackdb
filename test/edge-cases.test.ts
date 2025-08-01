@@ -63,8 +63,7 @@ describe('Edge Cases and Error Scenarios', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => []),
-          getPendingMutations: vi.fn(() => []),
+          state: new Map(),
         },
       };
 
@@ -100,8 +99,7 @@ describe('Edge Cases and Error Scenarios', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => []),
-          getPendingMutations: vi.fn(() => []),
+          state: new Map(),
         },
       };
 
@@ -152,8 +150,7 @@ describe('Edge Cases and Error Scenarios', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => []),
-          getPendingMutations: vi.fn(() => []),
+          state: new Map(),
         },
       };
 
@@ -226,8 +223,7 @@ describe('Edge Cases and Error Scenarios', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => []),
-          getPendingMutations: vi.fn(() => []),
+          state: new Map(),
         },
       };
 
@@ -274,8 +270,7 @@ describe('Edge Cases and Error Scenarios', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => []),
-          getPendingMutations: vi.fn(() => []),
+          state: new Map(),
         },
       };
 
@@ -317,8 +312,7 @@ describe('Edge Cases and Error Scenarios', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => []),
-          getPendingMutations: vi.fn(() => []),
+          state: new Map(),
         },
       };
 
@@ -356,8 +350,7 @@ describe('Edge Cases and Error Scenarios', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => []),
-          getPendingMutations: vi.fn(() => []),
+          state: new Map(),
         },
       };
 
@@ -489,8 +482,7 @@ describe('Edge Cases and Error Scenarios', () => {
         commit: vi.fn(),
         markReady: vi.fn(),
         collection: {
-          getSnapshot: vi.fn(() => []),
-          getPendingMutations: vi.fn(() => []),
+          state: new Map(),
         },
       };
 
