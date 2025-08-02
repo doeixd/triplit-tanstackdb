@@ -595,10 +595,9 @@ But for now, you have everything you need to build fast, offline-capable, deligh
 
 *Ready for more power? Continue to [Part 2: From Sedan to Supercar — Taming the Hybrid World](link), where we'll tackle the challenges of multiple data sources and real-time synchronization.*
 
+Of course. Here is the rewritten "Part 2" introduction, updated to more closely match the direct, developer-focused voice of the inspiration text and to remove the abstract "System of Record/Engagement" language.
+
 ## Part 2: From Sedan to Supercar — Taming the Hybrid World
-
-*This is Part 2 of "A Developer's Guide to the Modern Data Layer." In [Part 1: The Pragmatic Foundation](link-to-part-1), we built our reliable "sedan"—a fast, offline-first application using TanStack DB and Query over a traditional API.*
-
 
 In Part 1, we arrived at a fantastic destination. We built our sedan: a robust architecture that delivered an instant, offline-capable UI with minimal boilerplate. It’s the perfect vehicle for the vast majority of web applications, elegantly handling caching and optimistic updates. For many, this is all the car they will ever need.
 
@@ -606,18 +605,18 @@ But what happens when the road changes? What happens when your application’s a
 
 You might be tempted to trade in your reliable sedan for a purpose-built, all-in-one racecar—a specialized sync platform. But in doing so, you risk losing the flexibility and control of the powerful, traditional engine you’ve come to rely on. The solution isn't to trade one vehicle for another. It's to build a **supercar**—a hybrid marvel that combines the raw power of your traditional engine with the instantaneous response of a real-time electric motor.
 
-### The Problem of Growth: A Tale of Two Backends
+### The Problem of Growth: When One Backend Isn't Enough
 
-Your application is a success. The sedan architecture has served you well. Your **System of Record**—a powerful Postgres database with a secure REST API—flawlessly handles user authentication, billing via Stripe, and historical data.
+Your application is a success. The sedan architecture from Part 1 has served you well, providing a fast, offline-capable UI on top of your existing REST or GraphQL API.
 
-But now, you're building your next killer feature: a **live project dashboard**. On this dashboard, team members' changes must be reflected on every other screen *instantly*. You correctly identify that this is a job for a **System of Engagement**. You choose a great one, like **Triplit** or **Convex**, to handle the complex, stateful, multi-user interactions.
+But now, you're building your next killer feature: a **live project dashboard** where team members' changes must be reflected on every other screen *instantly*. You correctly identify that this is a job for a specialized **real-time sync engine**. You choose a great one, like **Triplit** or **Convex**, to handle the complex, stateful, multi-user interactions.
 
-Now you face a new, sophisticated problem. Your application's data lives in two different universes, speaking two different languages:
+Now you face a new, sophisticated problem. Your application's data is no longer from a single source. It's a hybrid, coming from:
 
-1.  **The REST Universe (`System of Record`):** Data is fetched via HTTP's request/response cycle. It's your source of truth for transactional data.
-2.  **The WebSocket Universe (`System of Engagement`):** Data arrives as a live stream over a persistent connection. It's your source of truth for ephemeral, collaborative state.
+1.  **Your Traditional API:** Data fetched via `useQuery` from your REST/GraphQL backend. This is your source of truth for things like user profiles, billing info, and historical data.
+2.  **Your Real-Time Sync Engine:** A live stream of data from Triplit, likely consumed with a library-specific hook (e.g., `useTriplitQuery`). This powers the collaborative state.
 
-The first casualty of this fragmentation is your component layer, which now has to awkwardly bridge these two worlds.
+The first casualty of this split is your component layer, which now has to awkwardly fetch, combine, and manage loading/error states from two completely different data-fetching clients.
 
 ### The Solution: TanStack DB as a Unified Data Fabric
 
@@ -625,8 +624,8 @@ This is where we upgrade from a sedan to a supercar. We leverage TanStack DB not
 
 The architecture is simple in concept: you create a TanStack DB `Collection` for *each* data source.
 
-*   **For the Traditional API:** We use the same `queryCollectionOptions` from Part 1, piping data from TanStack Query into a collection.
-*   **For the Real-Time Engine:** This requires building a **custom collection adapter**. Let's be clear: this is a significant, one-time infrastructure investment. You are building a "bridge" that translates your sync engine's specific protocol into TanStack DB's standard `sync` interface. While not trivial, this bridge is a high-leverage piece of code: build it once, and your entire team can consume real-time data with blissful simplicity.
+*   **For your Traditional API:** We use the same `@tanstack/query-collection` adapter from Part 1, piping data from TanStack Query into a collection.
+*   **For your Real-Time Sync Engine:** This requires building a **custom collection adapter**. Let's be clear: this is a significant, one-time infrastructure investment. You are building a "bridge" that translates your sync engine's specific protocol into TanStack DB's standard interface. While not trivial, this bridge is a high-leverage piece of code that, once built, allows your entire team to consume real-time data with blissful simplicity.
 
 ### Why It's Fast: The Magic of In-Memory Joins
 
