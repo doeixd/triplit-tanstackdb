@@ -43,11 +43,16 @@
   "devDependencies": {
     "@types/node": "^22.10.2",
     "pridepack": "2.6.4",
+    "standard-version": "^9.5.0",
     "tslib": "^2.8.1",
     "typescript": "^5.7.2",
     "vitest": "^2.1.8"
   },
   "scripts": {
+    "release": "standard-version && git push --follow-tags origin main",
+    "release:patch": "npm version patch && git push --follow-tags origin main",
+    "release:minor": "npm version minor && git push --follow-tags origin main",
+    "release:major": "npm version major && git push --follow-tags origin main",
     "prepublishOnly": "pridepack clean && pridepack build",
     "build": "pridepack build",
     "type-check": "pridepack check",
