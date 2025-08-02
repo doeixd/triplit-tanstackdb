@@ -34,56 +34,100 @@ For a full blog post introducing the concepts, and why it's beneficial to use Tr
 
 ## What is This and Why Do I Need It?
 
-Modern applications are rarely simple. As they grow, they often need to consume data from multiple, specialized backends. This leads to a common architectural challenge:
+In modern application development, we often have our traditional, transactional APIs (think REST or GraphQL), but we are increasingly moving towards a **sync-engine and local-first paradigm**. For this, we use tools like **Triplit** to power instant, offline-first data synchronization and simplify collaborative features. For our traditional APIs, **TanStack Query** remains the gold standard for fetching and caching server state.
 
-You have a **System of Record**: your traditional REST or GraphQL API, backed by a robust database like Postgres. It handles user accounts and transactional data.
+However, going all-in on a single data paradigm is often infeasible for production apps, which leads to a **hybrid architecture**. This creates a new challenge: how do you cleanly integrate and query data from these two different worlds within your UI components?
 
-You also have a **System of Engagement**: a real-time engine like Triplit, powering collaborative features and live dashboards with WebSockets.
+### The Pain Point: The Fragmented Component
 
-This inevitably leads to a fragmented frontend. A single UI component might need data from both worlds, forcing you to write complex, brittle code to manage two completely different data-fetching lifecycles.
+Without a unifying layer, your component code is forced to manage two completely different data-fetching lifecycles. This leads to a tangled mess of multiple data hooks, separate loading and error states, and manual logic to stitch the data together.
 
-#### The Pain Point: The Fragmented Component
+#### Before: Juggling Two Worlds
 
-Without a unifying layer, your component code becomes a tangled mess of different data hooks, loading states, and error handling logic:
+Here’s what that pain looks like in practice. Notice the boilerplate required to display a task (from Triplit) with its assignee's name (from a REST API).
 
 ```typescript
 // The old, fragmented way:
+import { useTriplitQuery } from '@triplit/react'; // Triplit's native hook
+import { useQuery } from '@tanstack/react-query'; // TanStack Query's hook
+
 function TaskCard({ taskId, userId }) {
-  // Hook for the real-time world, using Triplit's native hook...
+  // Hook #1: Get real-time data from Triplit's sync engine
   const { results: task, fetching: isLoadingTask } = useTriplitQuery(
     client.query('tasks').Id(taskId)
   );
 
-  // Hook for the traditional API world...
+  // Hook #2: Get user data from a traditional API via TanStack Query
   const { data: user, isLoading: isLoadingUser } = useQuery({
     queryKey: ['user', userId],
     queryFn: () => fetch(`/api/users/${userId}`).then(res => res.json())
   });
 
-  // Now you have to manage two separate loading states...
-  if (isLoadingTask || isLoadingUser) return <TaskSkeleton />;
+  // Now, you must manually manage and combine their states...
+  if (isLoadingTask || isLoadingUser) {
+    return <TaskSkeleton />;
+  }
 
-  // ...and two potential sources of error, with no easy way to join them.
   return (
     <div>
       <p>{task[0]?.title}</p>
+      {/* The "join" happens here, but it's implicit and brittle. */}
       <p>Assignee: {user.name}</p>
     </div>
   );
 }
 ```
+This pattern creates components that are difficult to test, reuse, and reason about.
 
-This pattern creates components that are difficult to test, reuse, and reason about. This is the problem `triplit-tanstackdb` is designed to solve.
+### The Solution: A Unified Data Fabric
 
-<br />
+This is where our third tool comes in: **TanStack DB**. It's a powerful, reactive, client-side database that provides a **unified query layer** over any data source you give it.
 
-## The Solution: A Unified Data Fabric
+This library, `triplit-tanstackdb`, is the specialized **adapter** that teaches TanStack DB how to speak "Triplit." It allows you to pipe your real-time Triplit data into a TanStack DB `Collection`. When combined with a collection for your REST API (powered by TanStack Query), you can seamlessly integrate your sync engine with your existing API.
 
-`triplit-tanstackdb` allows you to treat your real-time Triplit data as just another **TanStack DB `Collection`**.
+The result is a unified query and mutation API for your entire application—almost like sewing together a **Federated GraphQL graph, but for each client**.
 
-It provides an abstraction layer that harmonizes your disparate data sources. Once data is in a collection—whether from a REST API or a real-time Triplit stream—it speaks the same language. This enables you to build simple, powerful components that are completely unaware of the underlying data source complexity.
+#### After: A Single, Unified Query
 
-The true power of this is realized when you combine sources, but the foundation is a cleaner, more consistent way to work with your Triplit data.
+Here is the *exact same component*, now consuming data from a single, unified source: TanStack DB.
+
+```typescript
+// The new, unified way:
+import { useLiveQuery } from '@tanstack/react-db'; // The unified hook from TanStack DB
+import { q, eq } from '@tanstack/db';
+
+// Assume these collections are defined elsewhere, each powered by a different backend.
+import { tasksCollection } from '../collections/tasks.collection'; // From Triplit
+import { usersCollection } from '../collections/users.collection'; // From a REST API
+
+function TaskCard({ taskId }) {
+  // A single, declarative query that joins data across both backends.
+  const { data, isLoading } = useLiveQuery(() =>
+    q.from({ task: tasksCollection, user: usersCollection })
+      .where(({ task }) => eq(task.id, taskId))
+      .join(({ task, user }) => eq(task.assigneeId, user.id))
+      .select(({ task, user }) => ({
+        ...task,
+        assigneeName: user.name, // Shape data exactly as needed
+      }))
+      .first()
+  );
+
+  // A single, unified loading state.
+  if (isLoading) {
+    return <TaskSkeleton />;
+  }
+
+  return (
+    <div>
+      <p>{data.title}</p>
+      <p>Assignee: {data.assigneeName}</p>
+    </div>
+  );
+}
+```
+
+The component is now simpler, more declarative, and its own API is cleaner (it only needs `taskId`). It will reactively update if the task data changes in real-time **or** if the user data is updated from a background API fetch, all managed seamlessly through one unified hook.
 
 <br />
 
