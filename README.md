@@ -1,4 +1,5 @@
 [![NPM Version](https://img.shields.io/npm/v/triplit-tanstackdb)](https://www.npmjs.com/package/triplit-tanstackdb) [![Minzip Size](https://img.shields.io/bundlephobia/minzip/triplit-tanstackdb)](https://bundlephobia.com/package/triplit-tanstackdb) [![License](https://img.shields.io/npm/l/triplit-tanstackdb)](https://github.com/doeixd/triplit-tanstackdb/blob/main/LICENSE)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/doeixd/triplit-tanstackdb)
 
 # Triplit TanStack DB
 
